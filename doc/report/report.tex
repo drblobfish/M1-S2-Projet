@@ -1,0 +1,81 @@
+\documentclass{article}
+%% packages
+%%i%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}%% proof etc
+\usepackage{algorithm}
+\usepackage[noend]{algorithmic}
+
+\usepackage[hidelinks]{hyperref} %% inclusion after algorithm: mandatory
+\usepackage{url}
+\usepackage{graphicx}
+
+\usepackage{xspace}
+\usepackage{nicefrac}
+%\usepackage{underscore}
+
+\usepackage{comment}
+
+%% writing in French!
+\usepackage[T1]{fontenc}    % for accents
+\usepackage[utf8]{inputenc} % for coding
+\usepackage[french]{babel} % cesures, spaces etc
+
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{listings}
+\usepackage{cancel}
+
+\usepackage{fullpage}
+\usepackage{{booktabs}}
+
+%% macros
+%%i%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\parindent}{0cm}
+
+\title{Projet M1}
+\author{Yanis Zakhama}
+\author{Jules Herrmann}
+
+\begin{document}
+%=============================================
+\begin{titlepage}
+\hspace{0pt}
+%\vfill
+    
+\begin{center}
+\includegraphics[width=0.4\textwidth]{fig/logo-UP.png}\\[0.1in]
+
+\vspace{.2in}
+
+\Large \textbf {Rapport}\\[0.7in]
+% Title
+\Large \textbf {Projet M1}\\[0.7in]
+\end{center}
+
+\vspace{.2in}
+\textbf{Auteurs} : Yanis Zakhama, Jules Herrmann
+
+\textbf{Date} : \today
+
+\vspace{.3in}
+% Bottom of the page
+
+\vfill
+\hspace{0pt}
+\end{titlepage}
+\cleardoublepage
+
+\tableofcontents
+
+\section{Section}
+\subsection{Sous-section}
+
+\cite{dummy_article}
+
+\cleardoublepage
+
+\bibliographystyle{ieeetr}
+\bibliography{biblio}  %indiquer l'emplacement du fichier pour la bibliographie
+%\pagebreak
+\end{document}
