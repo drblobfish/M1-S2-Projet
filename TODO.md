@@ -14,5 +14,3 @@
 - Preliminary report : March 17th
 - Final report : ~ May 12th
 - Defense : ~ May 26th
-
-Test
