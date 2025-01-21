@@ -1,7 +1,7 @@
 # TODO
 
 [] Choose subject
-[] Git bootcamp for Yanis
+[x] Git bootcamp for Yanis
 [] Setup Latex templates (Jules)
 [] Literature review
 [] Code !!!
@@ -14,3 +14,5 @@
 - Preliminary report : March 17th
 - Final report : ~ May 12th
 - Defense : ~ May 26th
+
+Test
