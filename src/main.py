@@ -60,3 +60,19 @@ def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
             H[np.arange(m+1),np.arange(m+1)] += sigma
         print(np.round(H,3))
     return H
+
+#Algo permettant de renvoyer la forme de Hessenberg semblable à une matrice A
+
+def Hessenberg(A):
+    n = np.shape(A)[0]
+    for k in range(n-2):
+        x = A[k+1:,k]
+        e1 = np.zeros(n-k-1)
+        e1[0] = 1
+        a = -np.sign(x[0])*np.linalg.norm(x)
+        u = x + a*e1
+        u = u.reshape(-1,1)
+        u = u/np.linalg.norm(u)
+        A[k+1:n,k:n] -= 2*u@(u.T@A[k+1:n,k:n])
+        A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.T
+    return A
