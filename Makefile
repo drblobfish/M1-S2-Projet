@@ -1,3 +1,5 @@
+test :
+	python3 -m unittest discover -v
 
 pack :
 	mkdir -p release/

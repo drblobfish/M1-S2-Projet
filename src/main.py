@@ -1,16 +1,6 @@
 import numpy as np
-from scipy.linalg import hessenberg
 
-
-# generate A
-D = np.diag(np.array([1,2,3,4]))
-S = np.random.uniform(-1,1,(4,4))
-Sinv = np.linalg.inv(S)
-A = np.dot(S,np.dot(D,Sinv))
-
-
-# put A in hessenberg form
-H,Q = hessenberg(A,calc_q=True)
+PRECISION = 1e-10
 
 def givens_cancel_lower_left(k,H):
     norm = np.sqrt(H[k,k]**2 + H[k+1,k]**2)
@@ -39,31 +29,9 @@ def qr_step_naive(A):
     QR_result = np.linalg.qr(A)
     return np.dot(QR_result.R,QR_result.Q)
 
-test_hessenberg_1 = hessenberg(np.random.uniform(-1,1,(5,5)))
-test_hessenberg_2 = test_hessenberg_1.copy()
-
-hessenberg_qr_step(test_hessenberg_1)
-qr_step_naive(test_hessenberg_2)
-
-# qr algo with Hessenberg and Rayleigh quotient shift
-
-def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
-    n = A.shape[0]
-    H = hessenberg(A)
-    print(np.round(H,3))
-    for m in range(n-1,0,-1):
-        while np.abs(H[m,m-1]) > 1e-5:
-            sigma = H[m,m]
-            # substract sigma to all term of the diagonal
-            H[np.arange(m+1),np.arange(m+1)] -= sigma
-            hessenberg_qr_step(H[:m+1,:m+1])
-            H[np.arange(m+1),np.arange(m+1)] += sigma
-        print(np.round(H,3))
-    return H
-
 #Algo permettant de renvoyer la forme de Hessenberg semblable à une matrice A
 
-def Hessenberg(A):
+def hessenberg(A):
     n = np.shape(A)[0]
     for k in range(n-2):
         x = A[k+1:,k]
@@ -76,3 +44,18 @@ def Hessenberg(A):
         A[k+1:n,k:n] -= 2*u@(u.T@A[k+1:n,k:n])
         A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.T
     return A
+
+# qr algo with Hessenberg and Rayleigh quotient shift
+
+def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
+    n = A.shape[0]
+    H = hessenberg(A)
+    for m in range(n-1,0,-1):
+        while np.abs(H[m,m-1]) > PRECISION:
+            sigma = H[m,m]
+            # substract sigma to all term of the diagonal
+            H[np.arange(m+1),np.arange(m+1)] -= sigma
+            hessenberg_qr_step(H[:m+1,:m+1])
+            H[np.arange(m+1),np.arange(m+1)] += sigma
+    return H
+
