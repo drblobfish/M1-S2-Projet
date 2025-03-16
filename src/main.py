@@ -15,10 +15,10 @@ def hessenberg_qr_step(H):
     for k in range(n-1):
         c[k],s[k] = givens_cancel_lower_left(k,H)
         givens_mat = np.array([[c[k],-s[k]],[s[k],c[k]]])
-        H[k:k+2,k:] = np.dot(givens_mat,H[k:k+2,k:])
+        H[k:k+2,k:] = givens_mat @ H[k:k+2,k:]
     for k in range(n-1):
         givens_mat_t = np.array([[c[k],s[k]],[-s[k],c[k]]])
-        H[:k+2,k:k+2] = np.dot(H[:k+2,k:k+2],givens_mat_t)
+        H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat_t
 
     return H
 
@@ -27,7 +27,7 @@ def hessenberg_qr_step(H):
 
 def qr_step_naive(A):
     QR_result = np.linalg.qr(A)
-    return np.dot(QR_result.R,QR_result.Q)
+    return QR_result.R @ QR_result.Q
 
 #Algo permettant de renvoyer la forme de Hessenberg semblable à une matrice A
 
