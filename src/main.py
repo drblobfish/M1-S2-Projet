@@ -7,6 +7,16 @@ def givens_cancel_lower_left(k,H):
     return (H[k,k]/norm,
             -H[k+1,k]/norm)
 
+def select_moitie_sous_diagonale(M,n):
+    return M[
+            np.arange(M.shape[0]) - np.arange(M.shape[1]).reshape(-1,1) < n
+            ]
+
+def is_hessenberg(M):
+    return np.abs(select_moitie_sous_diagonale(M, -1) < PRECISION).all()
+
+def is_trisup(M):
+    return np.abs(select_moitie_sous_diagonale(M, 0) < PRECISION).all()
 
 def hessenberg_qr_step(H):
     n = H.shape[0]
@@ -19,7 +29,6 @@ def hessenberg_qr_step(H):
     for k in range(n-1):
         givens_mat_t = np.array([[c[k],s[k]],[-s[k],c[k]]])
         H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat_t
-
     return H
 
 
@@ -44,6 +53,25 @@ def hessenberg(A):
         A[k+1:n,k:n] -= 2*u@(u.T@A[k+1:n,k:n])
         A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.T
     return A
+
+# qr algo with Hessenberg
+
+def qr_algo_naive(A):
+    n = A.shape[0]
+    H = hessenberg(A)
+    for m in range(n-1,0,-1):
+        while np.abs(H[m,m-1]) > PRECISION:
+            hessenberg_qr_step(H[:m+1,:m+1])
+    return H
+
+# qr algo with Hessenberg
+
+def qr_algo_hessenberg(A):
+    n = A.shape[0]
+    H = hessenberg(A)
+    while np.abs(H[m,m-1]) > PRECISION:
+        hessenberg_qr_step(H[:m+1,:m+1])
+    return H
 
 # qr algo with Hessenberg and Rayleigh quotient shift
 
