@@ -54,6 +54,21 @@ def hessenberg(A):
         A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.T
     return A
 
+def hessenberg_complex(A):
+    #Préciser dtype = complex dans la matrice A en entrée
+    n = np.shape(A)[0]
+    for k in range(n-2):
+        x = A[k+1:,k]
+        e1 = np.zeros(n-k-1,dtype = complex)
+        e1[0] = 1
+        a = -np.exp(1j*np.angle(x[0]))*np.linalg.norm(x)
+        u = x + a*e1
+        u = u.reshape(-1,1)
+        u = u/np.linalg.norm(u)
+        A[k+1:n,k:n] -= 2*u@(u.conj().T@A[k+1:n,k:n])
+        A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.conj().T
+    return A
+
 # qr algo with Hessenberg
 
 def qr_algo_naive(A):
