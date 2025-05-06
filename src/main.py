@@ -18,7 +18,7 @@ def is_hessenberg(M):
 def is_trisup(M):
     return np.abs(select_moitie_sous_diagonale(M, 0) < PRECISION).all()
 
-def hessenberg_qr_step(H):
+def hessenberg_qr_step(H,U):
     n = H.shape[0]
     c = np.zeros(n-1)
     s = np.zeros(n-1)
@@ -29,18 +29,26 @@ def hessenberg_qr_step(H):
     for k in range(n-1):
         givens_mat_t = np.array([[c[k],s[k]],[-s[k],c[k]]])
         H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat_t
-    return H
+
+    # apply the transform to U
+    for k in range(n-1):
+        givens_mat_t = np.array([[c[k],s[k]],[-s[k],c[k]]])
+        U[:k+2,k:k+2] = U[:k+2,k:k+2] @ givens_mat_t
+    U = U.T
+    return
 
 
 # test hessenberg_qr_step
 
-def qr_step_naive(A):
+def qr_step_naive(A,U):
     QR_result = np.linalg.qr(A)
-    return QR_result.R @ QR_result.Q
+    A_new = QR_result.R @ QR_result.Q
+    U_new = U @ QR_result.Q
+    return A_new,U_new
 
 #Algo permettant de renvoyer la forme de Hessenberg semblable à une matrice A
 
-def hessenberg(A):
+def hessenberg(A,U):
     n = np.shape(A)[0]
     for k in range(n-2):
         x = A[k+1:,k]
@@ -52,7 +60,11 @@ def hessenberg(A):
         u = u/np.linalg.norm(u)
         A[k+1:n,k:n] -= 2*u@(u.T@A[k+1:n,k:n])
         A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.T
-    return A
+
+        #update U
+        U[k+1:n,k:n] -= 2*u@(u.T@U[k+1:n,k:n])
+        U = U.T
+    return A,U
 
 def hessenberg_complex(A):
     #Préciser dtype = complex dans la matrice A en entrée
@@ -73,32 +85,33 @@ def hessenberg_complex(A):
 
 def qr_algo_naive(A):
     n = A.shape[0]
-    H = hessenberg(A)
-    for m in range(n-1,0,-1):
-        while np.abs(H[m,m-1]) > PRECISION:
-            hessenberg_qr_step(H[:m+1,:m+1])
-    return H
+    U = np.identity(n)
+    while not is_trisup(A):
+        A,U = qr_step_naive(A,U)
+    return A,U
 
 # qr algo with Hessenberg
 
 def qr_algo_hessenberg(A):
     n = A.shape[0]
-    H = hessenberg(A)
-    while np.abs(H[m,m-1]) > PRECISION:
-        hessenberg_qr_step(H[:m+1,:m+1])
-    return H
+    U = np.identity(n)
+    H,U = hessenberg(A,U)
+    while not is_trisup(H):
+        hessenberg_qr_step(H,U)
+    return H,U
 
 # qr algo with Hessenberg and Rayleigh quotient shift
 
 def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
     n = A.shape[0]
-    H = hessenberg(A)
+    U = np.identity(n)
+    H,U = hessenberg(A,U)
     for m in range(n-1,0,-1):
         while np.abs(H[m,m-1]) > PRECISION:
             sigma = H[m,m]
             # substract sigma to all term of the diagonal
             H[np.arange(m+1),np.arange(m+1)] -= sigma
-            hessenberg_qr_step(H[:m+1,:m+1])
+            hessenberg_qr_step(H[:m+1,:m+1],U)
             H[np.arange(m+1),np.arange(m+1)] += sigma
-    return H
+    return H,U
 
