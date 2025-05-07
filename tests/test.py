@@ -115,7 +115,7 @@ class Test(unittest.TestCase):
                 T,U = qr_algo_hessenberg_rayleigh_quotient_shiftl(A)
                 self.assertTrue(is_trisup(T))
 
-    def _test_qr_algo_hessenberg_rayleigh_quotient_shiftl_transfer_matrix(self):
+    def test_qr_algo_hessenberg_rayleigh_quotient_shiftl_transfer_matrix(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
                 D = np.diag(np.array([1,2,3,4]))

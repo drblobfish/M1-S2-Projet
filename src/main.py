@@ -27,18 +27,13 @@ def hessenberg_qr_step(H,U):
         givens_mat = np.array([[c[k],-s[k]],[s[k],c[k]]])
         H[k:k+2,k:] = givens_mat @ H[k:k+2,k:]
     for k in range(n-1):
-        givens_mat_t = np.array([[c[k],s[k]],[-s[k],c[k]]])
-        H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat_t
+        givens_mat = np.array([[c[k],-s[k]],[s[k],c[k]]])
+        H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat.conj().T
 
-    # apply the transform to U
-    for k in range(n-1):
-        givens_mat_t = np.array([[c[k],s[k]],[-s[k],c[k]]])
-        U[:k+2,k:k+2] = U[:k+2,k:k+2] @ givens_mat_t
-    U = U.T
+        # apply the transform to U
+        # careful : U is NOT hessenberg, so you need to multiple the entire column
+        U[:,k:k+2] = U[:,k:k+2] @ givens_mat.conj().T
     return
-
-
-# test hessenberg_qr_step
 
 def qr_step_naive(A,U):
     QR_result = np.linalg.qr(A)
@@ -62,8 +57,7 @@ def hessenberg(A,U):
         A[0:n,k+1:n] -= 2*((A[0:n,k+1:n]@u))@u.T
 
         #update U
-        U[k+1:n,k:n] -= 2*u@(u.T@U[k+1:n,k:n])
-        U = U.T
+        U[0:n,k+1:n] -= 2*((U[0:n,k+1:n]@u))@u.T
     return A,U
 
 def hessenberg_complex(A):
