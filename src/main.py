@@ -13,10 +13,10 @@ def select_moitie_sous_diagonale(M,n):
             ]
 
 def is_hessenberg(M):
-    return np.abs(select_moitie_sous_diagonale(M, -1) < PRECISION).all()
+    return (np.abs(select_moitie_sous_diagonale(M, -1)) < PRECISION).all()
 
 def is_trisup(M):
-    return np.abs(select_moitie_sous_diagonale(M, 0) < PRECISION).all()
+    return (np.abs(select_moitie_sous_diagonale(M, 0)) < PRECISION).all()
 
 def hessenberg_qr_step(H,U):
     n = H.shape[0]
