@@ -109,3 +109,31 @@ def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
             H[np.arange(m+1),np.arange(m+1)] += sigma
     return H,U
 
+
+
+
+
+def tridiagonale(A):
+    # Met sous forme tridiagonale une matrice symétrique réelle A par les transformations de Householder
+
+    n = A.shape[0]
+
+    for k in range(n - 2):
+        x = A[k+1:, k]
+        e1 = np.zeros(n-k-1,dtype = float)
+        e1[0] = 1
+        alpha = -np.sign(x[0]) * np.linalg.norm(x)
+        u = x + alpha * e1
+        u = u / np.linalg.norm(u)
+
+        A[k+1:, k+1:] -= 2*((A[k+1:,k+1:]@u))@u.T 
+        A[k+1:, k+1:] -= 2*u@(u.T@A[k+1:,k+1:])
+        
+        A[k+1, k] =  np.linalg.norm(x)
+        A[k, k+1] = A[k+1, k]
+        
+        A[k+2:, k] =  0
+        A[k, k+2:] = A[k+2:, k]
+
+    return A
+
