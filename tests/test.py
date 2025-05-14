@@ -17,8 +17,7 @@ class Test(unittest.TestCase):
                 S = np.random.uniform(-1,1,(4,4))
                 Sinv = np.linalg.inv(S)
                 A = np.dot(S,np.dot(D,Sinv))
-                U = np.identity(A.shape[0])
-                H,U = hessenberg(A,U)
+                H,U = hessenberg(A)
                 
                 self.assertTrue(is_hessenberg(H))
 
@@ -30,8 +29,7 @@ class Test(unittest.TestCase):
                 Sinv = np.linalg.inv(S)
                 A = np.dot(S,np.dot(D,Sinv))
                 H = A.copy()
-                U = np.identity(A.shape[0])
-                H,U = hessenberg(H,U)
+                H,U = hessenberg(H)
                 
                 self.assertTrue(np.max(np.abs(U@H@U.T - A))<PRECISION)
 
@@ -43,8 +41,7 @@ class Test(unittest.TestCase):
                 Sinv = np.linalg.inv(S)
                 A = np.dot(S,np.dot(D,Sinv))
                 n = np.shape(A)[0]
-                U = np.identity(n)
-                H,U = hessenberg(A,U)
+                H,U = hessenberg(A)
                 hessenberg_qr_step(H,U)
 
                 self.assertTrue(is_hessenberg(H))
@@ -57,7 +54,7 @@ class Test(unittest.TestCase):
                 Sinv = np.linalg.inv(S)
                 A = np.dot(S,np.dot(D,Sinv))
                 n = np.shape(A)[0]
-                H,_ = hessenberg(A,np.identity(n))
+                H,_ = hessenberg(A)
                 U = np.identity(n)
                 H2 = H.copy()
                 hessenberg_qr_step(H2,U)

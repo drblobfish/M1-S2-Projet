@@ -43,8 +43,9 @@ def qr_step_naive(A,U):
 
 #Algo permettant de renvoyer la forme de Hessenberg semblable à une matrice A
 
-def hessenberg(A,U):
+def hessenberg(A):
     n = np.shape(A)[0]
+    U = np.identity(n)
     for k in range(n-2):
         x = A[k+1:,k]
         e1 = np.zeros(n-k-1)
@@ -88,8 +89,7 @@ def qr_algo_naive(A):
 
 def qr_algo_hessenberg(A):
     n = A.shape[0]
-    U = np.identity(n)
-    H,U = hessenberg(A,U)
+    H,U = hessenberg(A)
     while not is_trisup(H):
         hessenberg_qr_step(H,U)
     return H,U
@@ -98,8 +98,7 @@ def qr_algo_hessenberg(A):
 
 def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
     n = A.shape[0]
-    U = np.identity(n)
-    H,U = hessenberg(A,U)
+    H,U = hessenberg(A)
     for m in range(n-1,0,-1):
         while np.abs(H[m,m-1]) > PRECISION:
             sigma = H[m,m]
