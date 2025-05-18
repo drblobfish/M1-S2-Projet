@@ -31,7 +31,7 @@ def hessenberg_qr_step(H,U):
         H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat.conj().T
 
         # apply the transform to U
-        # careful : U is NOT hessenberg, so you need to multiple the entire column
+        # careful : U is NOT hessenberg, so you need to multiply the entire column
         U[:,k:k+2] = U[:,k:k+2] @ givens_mat.conj().T
     return
 
@@ -104,7 +104,21 @@ def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
             sigma = H[m,m]
             # substract sigma to all term of the diagonal
             H[np.arange(m+1),np.arange(m+1)] -= sigma
-            hessenberg_qr_step(H[:m+1,:m+1],U)
+
+            # implement QR step for hessenberg matrix
+            c = np.zeros(n-1)
+            s = np.zeros(n-1)
+            for k in range(m):
+                c[k],s[k] = givens_cancel_lower_left(k,H)
+                givens_mat = np.array([[c[k],-s[k]],[s[k],c[k]]])
+                H[k:k+2,k:] = givens_mat @ H[k:k+2,k:]
+
+            for k in range(m):
+                givens_mat = np.array([[c[k],-s[k]],[s[k],c[k]]])
+                H[:k+2,k:k+2] = H[:k+2,k:k+2] @ givens_mat.conj().T
+                U[:,k:k+2] = U[:,k:k+2] @ givens_mat.conj().T
+
+            # add back sigma to all term of the diagonal
             H[np.arange(m+1),np.arange(m+1)] += sigma
     return H,U
 
