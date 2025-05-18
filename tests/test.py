@@ -13,10 +13,7 @@ class Test(unittest.TestCase):
     def test_hessenberg(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 H,U = hessenberg(A)
                 
                 self.assertTrue(is_hessenberg(H))
@@ -24,10 +21,7 @@ class Test(unittest.TestCase):
     def test_hessenberg_transfer_matrix(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 H = A.copy()
                 H,U = hessenberg(H)
                 
@@ -36,10 +30,7 @@ class Test(unittest.TestCase):
     def test_hessenberg_stable_for_qr_step(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 n = np.shape(A)[0]
                 H,U = hessenberg(A)
                 hessenberg_qr_step(H,U)
@@ -49,10 +40,7 @@ class Test(unittest.TestCase):
     def test_hessenberg_qr_step_transfer_matrix(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 n = np.shape(A)[0]
                 H,_ = hessenberg(A)
                 U = np.identity(n)
@@ -64,40 +52,28 @@ class Test(unittest.TestCase):
     def test_qr_algo_naive(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 T,U = qr_algo_naive(A)
                 self.assertTrue(is_trisup(T))
 
     def test_qr_algo_naive_transfer_matrix(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 T,U = qr_algo_naive(A)
                 self.assertTrue(np.max(np.abs(U@T@U.T - A))<PRECISION)
 
     def test_qr_algo_hessenberg(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 T,U = qr_algo_hessenberg(A)
                 self.assertTrue(is_trisup(T))
 
     def test_qr_algo_hessenberg_transfer_matrix(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 T = A.copy()
                 T,U = qr_algo_hessenberg(T)
                 self.assertTrue(np.max(np.abs(U@T@U.T - A)) < PRECISION)
@@ -105,20 +81,14 @@ class Test(unittest.TestCase):
     def test_qr_algo_hessenberg_rayleigh_quotient_shiftl(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 T,U = qr_algo_hessenberg_rayleigh_quotient_shiftl(A)
                 self.assertTrue(is_trisup(T))
 
     def test_qr_algo_hessenberg_rayleigh_quotient_shiftl_transfer_matrix(self):
         for i in range(REPEAT):
             with self.subTest(i=i):
-                D = np.diag(np.array([1,2,3,4]))
-                S = np.random.uniform(-1,1,(4,4))
-                Sinv = np.linalg.inv(S)
-                A = np.dot(S,np.dot(D,Sinv))
+                A = random_valid_matrix(4)
                 T = A.copy()
                 T,U = qr_algo_hessenberg_rayleigh_quotient_shiftl(T)
                 self.assertTrue(np.max(np.abs(U@T@U.T - A))<PRECISION)

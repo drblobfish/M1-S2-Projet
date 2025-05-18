@@ -2,6 +2,13 @@ import numpy as np
 
 PRECISION = 1e-10
 
+def random_valid_matrix(n):
+    D = np.diag(np.arange(n))
+    S = np.random.uniform(-1,1,(n,n))
+    Sinv = np.linalg.inv(S)
+    A = S@D@Sinv
+    return A
+
 def givens_cancel_lower_left(k,H):
     norm = np.sqrt(H[k,k]**2 + H[k+1,k]**2)
     return (H[k,k]/norm,
@@ -78,25 +85,34 @@ def hessenberg_complex(A):
 
 # qr algo with Hessenberg
 
-def qr_algo_naive(A):
+def qr_algo_naive(A,return_nb_iter = False):
+    nb_iter = 0
     n = A.shape[0]
     U = np.identity(n)
     while not is_trisup(A):
         A,U = qr_step_naive(A,U)
+        nb_iter += 1
+    if return_nb_iter :
+        return A,U,nb_iter
     return A,U
 
 # qr algo with Hessenberg
 
-def qr_algo_hessenberg(A):
+def qr_algo_hessenberg(A,return_nb_iter = False):
+    nb_iter = 0
     n = A.shape[0]
     H,U = hessenberg(A)
     while not is_trisup(H):
         hessenberg_qr_step(H,U)
+        nb_iter += 1
+    if return_nb_iter :
+        return H,U,nb_iter
     return H,U
 
 # qr algo with Hessenberg and Rayleigh quotient shift
 
-def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
+def qr_algo_hessenberg_rayleigh_quotient_shiftl(A,return_nb_iter = False):
+    nb_iter = 0
     n = A.shape[0]
     H,U = hessenberg(A)
     for m in range(n-1,0,-1):
@@ -120,11 +136,11 @@ def qr_algo_hessenberg_rayleigh_quotient_shiftl(A):
 
             # add back sigma to all term of the diagonal
             H[np.arange(m+1),np.arange(m+1)] += sigma
+            nb_iter += 1
+    
+    if return_nb_iter :
+        return H,U,nb_iter
     return H,U
-
-
-
-
 
 def tridiagonale(A):
     # Met sous forme tridiagonale une matrice symétrique réelle A par les transformations de Householder
